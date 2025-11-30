@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 背景颜色（和之前的 #333333 一致） -->
+    <solid android:color="#333333"/>
+    <!-- 圆角半径（18dp，对应之前的 cornerRadius="18dp"） -->
+    <corners android:radius="18dp"/>
+</shape>

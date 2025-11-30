@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TikTok_Contribute</string>
+    <string name="friend_mention">\@ 朋友</string>
+    <string name="pre_see">预览</string>
+    <string name="page_edit">编辑封面</string>
+    <string name="add_ico">+</string>
+    <string name="add_title">添加标题</string>
+
+
+
+    <string name="return_ico">返回图标</string>
+    <string name="page_show">封面标签显示</string>
+    <string name="little_page">缩小版的封面标签显示</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/item_red_tip_bar.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/delete"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="#D32F2F"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <!-- 图标 -->
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/delete"
+        app:tint="#FFFFFF" />
+
+        <!-- 文字 -->
+    <TextView
+    android:id="@+id/tv_tip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:text="松手即可删除"
+    android:textColor="#FFFFFF"
+    android:textSize="14sp" />
+    </LinearLayout>

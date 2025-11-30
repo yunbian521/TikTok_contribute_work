@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/pre_see"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#121212"
+        android:src="@drawable/return_ico"
+        android:scaleType="centerInside"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/look"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pre_see"
+        android:textSize="19sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#121212"
+        app:cornerRadius="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="330dp"
+        android:layout_marginTop="10dp"/>
+    <!-- 顶部区域：封面预览 + 编辑按钮 -->
+
+    <ImageView
+        android:id="@+id/iv_cover_preview"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:src="@drawable/image"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="25dp"
+        android:contentDescription="@string/page_show"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_edit_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/page_edit"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#202F1F"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cover_preview"
+        app:layout_constraintStart_toStartOf="@id/iv_cover_preview"
+        app:layout_constraintEnd_toEndOf="@id/iv_cover_preview"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- 封面缩略图 + 添加按钮（简化版，可根据需求扩展） -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/preview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cover_preview"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="0dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_marginTop="6dp"
+            android:contentDescription="@string/little_page"
+            android:scaleType="centerCrop"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/btn_add_cover"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_cover"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#323232"
+            android:text="@string/add_ico"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            app:cornerRadius="2dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/rv_preview"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 内容区域：标题 + 描述 -->
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/add_title"
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:background="@null"
+        app:layout_constraintTop_toBottomOf="@id/preview_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/tv_title_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/et_title"
+        android:layout_below="@id/et_title"
+        android:text="0/20"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        app:layout_constraintTop_toBottomOf="@id/preview_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        android:paddingEnd="16dp"/>
+
+    <EditText
+        android:id="@+id/et_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="添加作品描述..."
+        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:background="@null"
+        app:layout_constraintTop_toBottomOf="@id/et_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:minLines="2"/>
+
+
+
+    <TextView
+        android:id="@+id/tv_desc_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/et_description"
+        android:layout_below="@id/et_description"
+        android:text="0/100"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:paddingEnd="10dp"
+        app:layout_constraintTop_toBottomOf="@id/et_title"
+        app:layout_constraintEnd_toEndOf="@id/et_title"
+        android:layout_marginTop="30dp"/>
+
+    <!-- 互动区域：话题、@好友、热门标签 -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_topic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="# 话题"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#393A44"
+        app:cornerRadius="16dp"
+        app:layout_constraintTop_toBottomOf="@id/et_description"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_mention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/friend_mention"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#393a44"
+        app:cornerRadius="16dp"
+        app:layout_constraintTop_toTopOf="@id/btn_topic"
+        app:layout_constraintStart_toEndOf="@id/btn_topic"
+        android:layout_marginStart="10dp"
+        />
+
+
+    <ImageButton
+     android:id="@+id/screen"
+     android:layout_width="40dp"
+     android:layout_height="40dp"
+     android:background="@drawable/bg_image_round"
+     android:src="@drawable/all_screen"
+     android:scaleType="centerInside"
+     android:padding="33dp"
+     app:layout_constraintTop_toTopOf="@id/btn_mention"
+     app:layout_constraintStart_toStartOf="@id/btn_mention"
+     android:layout_marginStart="240dp"
+     android:layout_marginTop="0dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_hot_topics"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/btn_topic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:nestedScrollingEnabled="false"/>
+
+    <!-- 设置区域：地理位置、标签、隐私、高级设置 -->
+    <LinearLayout
+        android:id="@+id/ll_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/rv_hot_topics"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/white_position" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正在获取位置..."
+            android:textColor="@android:color/white"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/right"
+            android:layout_marginStart="1dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/ll_location"
+        app:layout_constraintStart_toStartOf="@id/ll_location"
+        app:layout_constraintEnd_toEndOf="@id/ll_location"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/menu" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="添加标签"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/right"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_privacy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/ll_tags"
+        app:layout_constraintStart_toStartOf="@id/ll_tags"
+        app:layout_constraintEnd_toEndOf="@id/ll_tags"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/open_lock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="公开 · 所有人可见"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/right"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_advanced"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/ll_privacy"
+        app:layout_constraintStart_toStartOf="@id/ll_privacy"
+        app:layout_constraintEnd_toEndOf="@id/ll_privacy"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/set" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="高级设置"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="5dp"/>
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/right"
+            android:layout_marginStart="10dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/show_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发布成功后将保存内容至本地"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/ll_advanced"
+        app:layout_constraintStart_toStartOf="@id/ll_advanced"
+        app:layout_constraintEnd_toEndOf="@id/ll_advanced"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp" />
+
+    <!-- 底部区域：分享、分类、发布 -->
+    <LinearLayout
+        android:id="@+id/publish_btn"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#121212"
+        app:layout_constraintTop_toBottomOf="@id/ll_advanced"
+        app:layout_constraintStart_toStartOf="@id/ll_advanced"
+        app:layout_constraintEnd_toEndOf="@id/ll_advanced"
+        android:layout_marginTop="45dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_share"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="分享"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#121212"
+            app:icon="@drawable/share"
+            app:iconGravity="top"
+            app:iconPadding="1dp"
+            android:layout_marginStart="0dp"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_category"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="限时日常"
+            android:textSize="17sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#393a44"
+            app:icon="@drawable/add"
+            app:iconGravity="start"
+            app:iconPadding="8dp"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="0dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_publish"
+            android:layout_width="130dp"
+            android:layout_height="60dp"
+            android:text="发作品"
+            android:textSize="17sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#FF2D55"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="7dp"/>
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_candidates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="200dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/btn_mention"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
