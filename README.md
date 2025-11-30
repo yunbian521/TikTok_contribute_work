@@ -1,5 +1,7 @@
 ## 整个项目的功能是使用java来开发的，界面设计使用xml来实现，模拟抖音的“投稿”页面。
-（演示视频百度网盘链接：https://pan.baidu.com/s/1zf1koIekE_t6PompSBjesA 提取码: 5t4q）  
+提交材料：  
+	记录文档：开发记录文档.md  
+	演示视频百度网盘链接：https://pan.baidu.com/s/1zf1koIekE_t6PompSBjesA 提取码: 5t4q  
 
 项目中实现了以下的一些功能：  
 
