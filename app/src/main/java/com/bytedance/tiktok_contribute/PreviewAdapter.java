@@ -19,27 +19,11 @@ public class PreviewAdapter extends RecyclerView.Adapter<PreviewAdapter.ViewHold
     //public PreviewAdapter(List<Uri> images) {
       //  this.images = images;
     //}
-    private OnCoverChangeListener coverChangeListener;
+    //private OnCoverChangeListener coverChangeListener;
     public PreviewAdapter(List<Uri> images) {
         this.images = images;
-        notifyCoverChanged(); // 初始化时触发封面更新
     }
-    // 封面更新回调接口
-    public interface OnCoverChangeListener {
-        void onCoverChanged(Uri coverUri);
-    }
-    // 设置回调
-    public void setOnCoverChangeListener(OnCoverChangeListener listener) {
-        this.coverChangeListener = listener;
-        notifyCoverChanged();
-    }
-    // 触发回调
-    private void notifyCoverChanged() {
-        if (coverChangeListener != null) {
-            Uri coverUri = images.isEmpty() ? null : images.get(0);
-            coverChangeListener.onCoverChanged(coverUri);
-        }
-    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

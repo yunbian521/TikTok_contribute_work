@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import android.Manifest;
@@ -103,31 +104,25 @@ public class MainActivity extends AppCompatActivity {
         rvPreview = findViewById(R.id.rv_preview);
 
         etTitle = findViewById(R.id.et_title);
-        etDescription = findViewById(R.id.et_description);
-        tvTitleCount = findViewById(R.id.tv_title_count);
-        tvDescCount = findViewById(R.id.tv_desc_count);
+        etDescription = findViewById(R.id.et_description);//描述框
+        tvTitleCount = findViewById(R.id.tv_title_count);//标题的计数
+        tvDescCount = findViewById(R.id.tv_desc_count);//描述框的计数
 
         // 初始化预览列表（横向滚动）
         previewAdapter = new PreviewAdapter(selectedImages);
-
-        // 设置封面更新回调
-        previewAdapter.setOnCoverChangeListener(new PreviewAdapter.OnCoverChangeListener() {
-            @Override
-            public void onCoverChanged(Uri coverUri) {
-                // 复用原有updateCover方法更新封面
-                updateCover();
-            }
-        });
+        //这段将RecyclerView变成横向滚动
         rvPreview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvPreview.setAdapter(previewAdapter);
+        rvPreview.setAdapter(previewAdapter);  //rvPreview是RecyclerView预览框
 
         initViews();
         initMockData();
         initAdapters();
         initListeners();
 
+        //长按照片交换位置和删除功能实现
+        ViewGroup rootLayout = findViewById(R.id.activity_root_layout);
         //  绑定ItemTouchHelper（拖动排序+删除）
-        PhotoItemTouchHelperCallback callback = new PhotoItemTouchHelperCallback(this, selectedImages, previewAdapter);
+        PhotoItemTouchHelperCallback callback = new PhotoItemTouchHelperCallback(this, selectedImages, previewAdapter, rootLayout);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(rvPreview);
         // 按钮点击事件
@@ -138,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.btn_add_cover).setOnClickListener(v -> checkPermissionAndOpenAlbum());
+
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -182,17 +178,20 @@ public class MainActivity extends AppCompatActivity {
                 tvDescCount.setText(currentLength + "/" + MAX_DESC_LENGTH);
             }
         });
+
         tvLocation = findViewById(R.id.tv_location); // 对应布局中的定位显示控件
         //申请定位权限
         requestLocationPermission();
     }
     // 申请定位权限
+    /*
+    精确位置	ACCESS_FINE_LOCATION	    GPS/WiFi，精度~10米	导航、精确追踪
+    粗略位置	ACCESS_COARSE_LOCATION	    基站/WiFi，精度~1公里	天气、本地服务
+    后台位置	ACCESS_BACKGROUND_LOCATION	Android 10+ 需要	后台持续定位
+     */
     private void requestLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             // 已有权限，直接获取定位
             getLocation();
@@ -217,9 +216,9 @@ public class MainActivity extends AppCompatActivity {
     }
     // 初始化控件
     private void initViews() {
-        etDescription = findViewById(R.id.et_description);
-        rvCandidates = findViewById(R.id.rv_candidates);
-        rvHotTopics = findViewById(R.id.rv_hot_topics);
+        //etDescription = findViewById(R.id.et_description);
+        rvCandidates = findViewById(R.id.rv_candidates); //候选列表RecyclerView（这个用于更新用户和话题列表）
+        rvHotTopics = findViewById(R.id.rv_hot_topics);  //话题的RecyclerView（这个用于横向显示话题）
         rvCandidates.setLayoutManager(new LinearLayoutManager(this));
         rvHotTopics.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
@@ -247,7 +246,23 @@ public class MainActivity extends AppCompatActivity {
         });
         rvCandidates.setAdapter(candidateAdapter);
 
-        // 热门话题适配器
+        // 热门话题RecyclerView的适配器
+        /*
+        hotTopicAdapter = new HotTopicAdapter(this, hotTopics, topic -> {
+            // 点击热门话题，插入“#话题#”
+            String topicText = "#" + topic.getName() + "# ";
+            insertText(topicText);
+        });
+        等价写法
+        hotTopicAdapter = new HotTopicAdapter(this, hotTopics, new HotTopicAdapter.OnTopicClickListener() {
+        @Override
+        public void onTopicClick(Topic topic) {
+        // 点击逻辑和 Lambda 完全一样
+        String topicText = "#" + topic.getName() + "# ";
+        insertText(topicText);
+        }
+        });
+        */
         hotTopicAdapter = new HotTopicAdapter(this, hotTopics, topic -> {
             // 点击热门话题，插入“#话题#”
             String topicText = "#" + topic.getName() + "# ";
@@ -311,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     // 更新话题候选列表（热门话题）
+    //原来每次添加到candidateList中的数据不同，话题和用户列表都是用candidateAdapter来更新的
     private void updateTopicCandidates() {
         candidateList.clear();
         for (Topic topic : hotTopics) {
@@ -368,16 +384,36 @@ public class MainActivity extends AppCompatActivity {
 
      //检查权限并打开相册
     private void checkPermissionAndOpenAlbum() {
+        /*
+        逻辑：
+        Android 13+（TIRAMISU）：相册权限拆分为独立的 READ_MEDIA_IMAGES（仅访问图片），不再需要宽泛的 READ_EXTERNAL_STORAGE（读取外部存储）；
+        Android 12 及以下：仍使用传统的 READ_EXTERNAL_STORAGE 权限访问相册；
+        目的：适配 Android 13 后的权限细分规则，避免申请冗余权限，同时兼容低版本。
+         */
         String permission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                 ? Manifest.permission.READ_MEDIA_IMAGES
-                : Manifest.permission.READ_EXTERNAL_STORAGE;
+                : Manifest.permission.READ_EXTERNAL_STORAGE;  //选择对应相册权限
 
         //已授权则直接打开相册
+        /*
+        仅需「读取权限状态」，无需依赖 Activity 生命周期 / 回调，Context 即可完成；
+        ContextCompat 更通用（可在 Service/Adapter 等非 Activity 类中调用）
+         */
         if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             openAlbum();
         }
+        else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission}, 100);
+        }
+        /*
         //  未授权，需要判断是否需要向用户解释为何需要权限
-        else if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+        ActivityCompat.shouldShowRequestPermissionRationale(this, permission)：判断「是否需要向用户解释权限用途」；
+        返回 true 的场景：用户之前拒绝过该权限，但未勾选 “不再询问”—— 此时系统要求开发者先解释权限用途，再重新申请（合规要求，避免频繁弹窗骚扰用户）；
+        返回 false 的场景：① 首次申请权限；② 用户拒绝权限并勾选 “不再询问”；
+        核心：该方法必须依赖 Activity 上下文（需要关联页面的权限申请状态），因此用专门面向 Activity 的 ActivityCompat。
+        首次申请权限: 用户未接触过该权限，直接弹系统权限弹窗即可，无需开发者提前解释
+
+        else if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) { //判断「是否需要向用户解释权限用途」
             // 弹窗解释权限用途
             new AlertDialog.Builder(this)
                     .setTitle("权限申请")
@@ -389,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
                     .setNegativeButton("取消", null)
                     .show();
         }
-
         else {
             new AlertDialog.Builder(this)
                     .setTitle("权限被拒绝")
@@ -403,7 +438,8 @@ public class MainActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("取消", null)
                     .show();
-        }
+        }*/
+
     }
 
     //更新预览列表和封面
@@ -416,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateCover() {
+        /* ivCover 是封面的id*/
         if (!selectedImages.isEmpty()) {
             Glide.with(this)
                     .load(selectedImages.get(0))

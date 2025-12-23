@@ -47,7 +47,7 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.View
         TextView tvContent;
         ViewHolder(View itemView) {
             super(itemView);
-            tvContent = itemView.findViewById(R.id.tv_candidate);
+            tvContent = itemView.findViewById(R.id.tv_candidate); //这个是放在候选列表RecyclerView中的单个子项
         }
     }
 }

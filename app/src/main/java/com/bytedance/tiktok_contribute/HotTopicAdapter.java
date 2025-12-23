@@ -49,7 +49,7 @@ public class HotTopicAdapter extends RecyclerView.Adapter<HotTopicAdapter.ViewHo
         TextView tvTopic;
         ViewHolder(View itemView) {
             super(itemView);
-            tvTopic = itemView.findViewById(R.id.tv_hot_topic);
+            tvTopic = itemView.findViewById(R.id.tv_hot_topic);//这个是放在热门列表RecyclerView中的单个子项
         }
     }
 }
